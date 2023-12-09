@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'screens/login.dart';
 import 'screens/registre.dart';
+import 'screens/home.dart';
 import 'QRScannerPage.dart';
 
 void main() {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
-        // ... autres routes
+        '/home': (context) => HomeScreen(),
       },
     );
   }
