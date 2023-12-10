@@ -57,11 +57,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _logout(),
-        tooltip: 'Déconnexion',
-        child: Icon(Icons.logout),
-      ),
     );
   }
 
@@ -117,7 +112,4 @@ class HomeScreen extends StatelessWidget {
     // Afficher Liste Vins
   }
 
-  void _logout() {
-    // Déconnexion
-  }
 }
