@@ -38,5 +38,6 @@ dev_dependencies:
 flutter:
 
   assets:
-     - assets/images/Vin.jpg
+    - assets/images/Vin.jpg
+    - assets/images/Vigne.jpg
 uses-material-design: true
