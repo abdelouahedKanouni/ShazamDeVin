@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'home.dart';
-import 'registre.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,11 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      final String apiUrl = 'http://localhost:8080/login';
-
       try {
         final response = await http.post(
-          Uri.parse("http://10.0.2.2:8080/login"),
+          Uri.parse("http://192.168.1.27:8080/login"),
           headers: <String, String>{
             'Content-Type': 'application/json;charSet=UTF-8'
           },
@@ -37,15 +36,41 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (response.statusCode == 200) {
-          // Connexion réussie, effectuez les actions nécessaires
-        } else {
+          Fluttertoast.showToast(
+            msg: 'Vous êtes bien connecté 🤗',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 18.0,
+          );
+          await Future.delayed(Duration(seconds: 2));
+          Navigator.pushNamed(context, '/home');
+        }else if (response.statusCode == 401) {
+          Fluttertoast.showToast(
+            msg: 'Pas encore inscrit ? Inscrivez-vous ! 😊',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            backgroundColor: const Color(0xFF311B92),
+            textColor: Colors.white,
+            fontSize: 18.0,
+          );
+        }
+        else {
           // Afficher une erreur si la connexion échoue
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erreur de connexion')),
+          Fluttertoast.showToast(
+            msg: 'Les informations de connexion sont incorrectes 🤭',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 18.0,
           );
         }
       } catch (e) {
-        // Gérer les erreurs liées à la connexion
         print(e.toString());
       } finally {
         setState(() {
@@ -168,14 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return HomePage();
-                      }));
-                    },
-                    child: Text('home page'),
                   ),
                 ],
               ),

@@ -1,14 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shazam_vin/screens/wine_details.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
 
-class _HomePageState extends State<HomePage> {
-  String _barcodeResult = 'Aucun résultat de scan';
+class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +20,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/Vin.jpg'), // Remplacez par le chemin de votre image
+            image: AssetImage('assets/images/Vin.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -31,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () => _scanBarcode(),
+                onPressed: () => _scanBarcode(context),
                 child: Text('Scanner Code Barre'),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.transparent,
@@ -42,7 +40,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Text(_barcodeResult),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _showWineList(),
@@ -68,24 +65,59 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _scanBarcode() async {
+  void _showAlert(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Résultat du scan'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _scanBarcode(BuildContext context) async {
     try {
       var result = await BarcodeScanner.scan();
-      setState(() {
-        _barcodeResult = 'Valeur : ${result.rawContent}';
-      });
+      if (result != null) {
+        final response = await http.post(
+          Uri.parse('http://192.168.1.27:8080/verifyWine'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'barcode': result.rawContent}),
+        );
+        final message = json.decode(response.body)['message'] as String;
+
+        if (message.startsWith('Code-barres')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WineDetailsPage(barcode: result.rawContent),
+            ),
+          );
+        } else {
+          _showAlert(context, message);
+        }
+      }
     } catch (e) {
-      setState(() {
-        _barcodeResult = 'Erreur de scan : $e';
-      });
+      _showAlert(context, 'Erreur de scan : $e');
     }
   }
 
+
   void _showWineList() {
-    print('Afficher Liste Vins');
+    // Afficher Liste Vins
   }
 
   void _logout() {
-    print('Déconnexion');
+    // Déconnexion
   }
 }
