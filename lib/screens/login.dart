@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
+import 'home.dart';
 import 'registre.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -167,6 +168,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return HomePage();
+                      }));
+                    },
+                    child: Text('home page'),
                   ),
                 ],
               ),

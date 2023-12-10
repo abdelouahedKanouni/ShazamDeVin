@@ -13,7 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   qr_code_scanner: ^1.0.1
-  http: ^1.1.2
+  barcode_scan2: ^4.0.0
+  http: ^1.1.0
   shared_preferences: ^2.0.8
   google_fonts: ^6.1.0
   material_design_icons_flutter: 7.0.7296
