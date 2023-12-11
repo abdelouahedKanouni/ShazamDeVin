@@ -18,7 +18,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         final response = await http.post(
-          Uri.parse("http://10.0.2.2:8080/signup"),
+          Uri.parse("http://192.168.1.27:8080/auth/signup"),
           headers: <String, String>{
             'Content-Type': 'application/json;charSet=UTF-8',
           },

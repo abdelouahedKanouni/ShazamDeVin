@@ -126,12 +126,12 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   Future<void> _loadWineDetails() async {
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.27:8080/loadWineDetails'),
+        Uri.parse('http://192.168.1.27:8080/wine/loadDetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'barcode': widget.barcode}),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 404) {
         // Convertir la réponse JSON en Map
         Map<String, dynamic> wineData = json.decode(response.body);
 
@@ -185,7 +185,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       BuildContext currentContext = context;
 
       var response = await http.post(
-        Uri.parse('http://192.168.1.27:8080/saveWineDetails'),
+        Uri.parse('http://192.168.1.27:8080/wine/saveDetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(wineDetails.toMap()),
       );

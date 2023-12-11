@@ -4,6 +4,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -60,50 +61,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showAlert(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Résultat du scan'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _scanBarcode(BuildContext context) async {
     try {
       var result = await BarcodeScanner.scan();
       if (result != null) {
-        final response = await http.post(
-          Uri.parse('http://192.168.1.27:8080/verifyWine'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'barcode': result.rawContent}),
-        );
-        final message = json.decode(response.body)['message'] as String;
 
-        if (message.startsWith('Code-barres')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WineDetailsPage(barcode: result.rawContent),
-            ),
-          );
-        } else {
-          _showAlert(context, message);
-        }
+        Fluttertoast.showToast(
+          msg: 'Affichage du vin n°${result.rawContent}',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 18.0,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WineDetailsPage(barcode: result.rawContent),
+          ),
+        );
       }
     } catch (e) {
-      _showAlert(context, 'Erreur de scan : $e');
+      Fluttertoast.showToast(
+        msg: 'Erreur de scan : $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18.0,
+      );
     }
   }
 

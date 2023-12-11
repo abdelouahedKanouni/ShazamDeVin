@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.1.27:8080/login"),
+          Uri.parse("http://192.168.1.27:8080/auth/login"),
           headers: <String, String>{
             'Content-Type': 'application/json;charSet=UTF-8'
           },
