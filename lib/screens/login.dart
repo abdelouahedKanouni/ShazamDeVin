@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'home.dart';
+import 'session_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -45,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
             textColor: Colors.white,
             fontSize: 18.0,
           );
-          await Future.delayed(Duration(seconds: 2));
+          // Enregistrer la session
+          final Map<String, dynamic> userData = {
+            'userId': jsonDecode(response.body)['_id'],
+            'isAdmin': jsonDecode(response.body)['is_admin'],
+          };
+          await saveSession(userData['userId'], userData['isAdmin']);
+
           Navigator.pushNamed(context, '/home');
         }else if (response.statusCode == 401) {
           Fluttertoast.showToast(

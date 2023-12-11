@@ -4,7 +4,8 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
-
+import 'session_utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -16,6 +17,23 @@ class HomeScreen extends StatelessWidget {
           'Accueil',
           style: GoogleFonts.pacifico(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () => _logout(context),
+              child: Text('Déconnexion'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.transparent,
+                onPrimary: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -82,6 +100,10 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> _scanBarcode(BuildContext context) async {
     try {
+      //////// Récupérer la session de l'utilisateur////
+      final userSession= await getSession();
+      print('session: $userSession');
+      ////////////////////////////////////////////////
       var result = await BarcodeScanner.scan();
       if (result != null) {
         final response = await http.post(
@@ -112,4 +134,28 @@ class HomeScreen extends StatelessWidget {
     // Afficher Liste Vins
   }
 
+  void _logout(BuildContext context) async {
+    // Envoyer une requête POST à l'API pour supprimer la session
+    final response = await http.post(
+      Uri.parse('http://192.168.1.27:8080/logout'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    // Nettoyer la session localement
+    await clearSession();
+    if (response.statusCode==200) {
+      Fluttertoast.showToast(
+        msg: 'Déconnexion réussie au revoir 👋',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 18.0,
+      );
+
+      // Naviguer vers la page de connexion
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+
+  }
 }

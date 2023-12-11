@@ -45,6 +45,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.post('/logout', (req, res) => {
+    res.status(200).json({ message: 'Déconnexion réussie' });
+
+});
+
 app.post('/signup', async (req, res) => {
   try {
     const { identifiant, password } = req.body;
