@@ -11,4 +11,7 @@ router.post('/saveDetails', wineController.saveWineDetails);
 // Route for loading wine details
 router.post('/loadDetails', wineController.loadWineDetails);
 
+// Route for loading wines
+router.get('/loads', wineController.loadWines);
+
 module.exports = router;

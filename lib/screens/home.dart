@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shazam_vin/screens/wine_list.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -43,7 +44,7 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => _showWineList(),
+                onPressed: () => _showWineList(context),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.transparent,
                   onPrimary: Colors.white,
@@ -96,8 +97,11 @@ class HomeScreen extends StatelessWidget {
   }
 
 
-  void _showWineList() {
-    // Afficher Liste Vins
+  void _showWineList(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => WineListPage()),
+    );
   }
 
 }

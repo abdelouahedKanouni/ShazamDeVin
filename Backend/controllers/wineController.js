@@ -59,3 +59,26 @@ exports.loadWineDetails = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// Controller function for loading wines
+exports.loadWines = async (req, res) => {
+  try {
+    let query = {};
+    // Sorting
+    const sortField = req.query.sortField || 'nom'; // Default sorting by name
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    const sort = { [sortField]: sortOrder };
+    
+    // Searching by name
+    const searchTerm = req.query.searchTerm;
+    if (searchTerm) {
+      query.nom = { $regex: new RegExp(searchTerm, 'i') }; // Case-insensitive search
+    }
+
+    const wines = await Wine.find(query).sort(sort);
+    res.status(200).json(wines);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

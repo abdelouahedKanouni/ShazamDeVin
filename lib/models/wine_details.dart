@@ -30,4 +30,16 @@ class WineDetails {
     };
   }
 
+  factory WineDetails.fromJson(Map<String, dynamic> json) {
+    return WineDetails(
+      id: json['_id'],
+      nom: json['nom'],
+      descriptif: json['descriptif'],
+      embouteillage: json['embouteillage'],
+      cepage: json['cepage'],
+      chateau: json['chateau'],
+      prix: json['prix'].toDouble(),
+    );
+  }
+
 }
