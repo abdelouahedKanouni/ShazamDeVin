@@ -63,6 +63,7 @@ exports.loadWineDetails = async (req, res) => {
 // Controller function for loading wines
 exports.loadWines = async (req, res) => {
   try {
+    console.log(req.query);
     let query = {};
     // Sorting
     const sortField = req.query.sortField || 'nom'; // Default sorting by name

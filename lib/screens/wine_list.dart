@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'package:shazam_vin/models/wine_details.dart';
@@ -13,16 +14,18 @@ class WineListPage extends StatefulWidget {
 
 class _WineListPageState extends State<WineListPage> {
   List<WineDetails> wines = []; // Liste de vins
+  String searchTerm = "";
+  String sortField = "";
+  bool sortOrderDesc = false;
 
   @override
   void initState() {
     super.initState();
-    // Chargement initial des vins triés
     fetchWines();
   }
 
   // Fonction pour effectuer une requête HTTP et récupérer la liste triée de vins
-  Future<void> fetchWines({String? sortField, bool sortOrderDesc = false, String? searchTerm}) async {
+  Future<void> fetchWines() async {
     final response = await http.get(
       Uri.parse('${GlobalData.server}/wine/loads?sortField=$sortField&sortOrder=${sortOrderDesc ? 'desc' : 'asc'}&searchTerm=$searchTerm'),
     );
@@ -49,62 +52,115 @@ class _WineListPageState extends State<WineListPage> {
     }
   }
 
+  Future<void> _refreshWines() async {
+    await Future.delayed(const Duration(seconds: 1));
+    fetchWines();
+  }
 
   void sortByName(bool sortOrderDesc) {
-    fetchWines(sortField: 'nom', sortOrderDesc: sortOrderDesc);
+    sortField = 'nom';
+    this.sortOrderDesc = sortOrderDesc;
+    fetchWines();
   }
 
   void sortByPrice(bool sortOrderDesc) {
-    fetchWines(sortField: 'prix', sortOrderDesc: sortOrderDesc);
+    sortField = 'prix';
+    this.sortOrderDesc = sortOrderDesc;
+    fetchWines();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Liste des vins'),
+        title: Text(
+          'Liste des vins',
+          style: GoogleFonts.pacifico(),
+        ),
       ),
-      body: Column(
-        children: [
-          // Input field for searching by name
-          TextField(
-            onChanged: (value) {
-              fetchWines(searchTerm: value);
-            },
-            decoration: InputDecoration(labelText: 'Recherche par nom'),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/Vigne.jpg'),
+            fit: BoxFit.cover,
           ),
-          // Buttons for sorting
-          ElevatedButton(
-            onPressed: () => sortByPrice(true),
-            child: Text('Tri par prix (ascendant)'),
-          ),
-          ElevatedButton(
-            onPressed: () => sortByPrice(false),
-            child: Text('Tri par prix (descendant)'),
-          ),
-          // List of wines
-          Expanded(
-            child: ListView.builder(
-              itemCount: wines.length,
-              itemBuilder: (context, index) {
-                final wine = wines[index];
-                return ListTile(
-                  title: Text(wine.nom ?? 'Unknown'),
-                  subtitle: Text('Prix: ${wine.prix}'),
-                  onTap: () {
-                    // Navigate to the wine details page when the wine is clicked
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WineDetailsPage(barcode: wine.id),
+        ),
+        child: Column(
+          children: [
+            // Input field for searching by name
+            TextField(
+              onChanged: (value) {
+                searchTerm = value;
+                fetchWines();
+              },
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(labelText: '  Recherche par nom', labelStyle: TextStyle(color: Colors.white)),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => sortByPrice(true),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  child: const Text('prix (ascendant)'),
+                ),
+                ElevatedButton(
+                  onPressed: () => sortByPrice(false),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  child: const Text('prix (descendant)'),
+                ),
+              ],
+            ),
+            // List of wines
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshWines,
+                child: ListView.builder(
+                  itemCount: wines.length,
+                  itemBuilder: (context, index) {
+                    final wine = wines[index];
+                    return Card(
+                      elevation: 5.0,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: const BorderSide(color: Colors.black),
+                      ),
+                      child: ListTile(
+                        title: Text(wine.nom ?? 'Inconnu'),
+                        subtitle: Text('Prix: ${wine.prix}'),
+                        onTap: () async {
+                          // Navigate to the wine details page when the wine is clicked
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WineDetailsPage(barcode: wine.id),
+                            ),
+                          );
+                          fetchWines();
+                        },
                       ),
                     );
                   },
-                );
-              },
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

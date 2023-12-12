@@ -1,3 +1,3 @@
 class GlobalData{
- static const  String server = 'http://10.0.2.2:8080';
+ static const  String server = 'http://192.168.1.27:8080';
 }
