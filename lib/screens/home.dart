@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'session_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shazam_vin/screens/wine_list.dart';
+
 
 class HomeScreen extends StatelessWidget {
 
@@ -36,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/Vin.jpg'),
             fit: BoxFit.cover,
@@ -58,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _showWineList(context),
                 style: ElevatedButton.styleFrom(
@@ -81,6 +83,10 @@ class HomeScreen extends StatelessWidget {
   Future<void> _scanBarcode(BuildContext context) async {
     try {
       var result = await BarcodeScanner.scan();
+      //////// Récupérer la session de l'utilisateur////
+      final userSession= await getSession();
+      print('session: $userSession');
+      ////////////////////////////////////////////////
       if (result != null) {
         final response = await http.post(
           Uri.parse('http://192.168.1.27:8080/verifyWine'),

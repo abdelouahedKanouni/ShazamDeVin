@@ -35,3 +35,7 @@ exports.signup = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+exports.logout = (req, res) => {
+    res.status(200).json({ message: 'Logged out' });
+}
