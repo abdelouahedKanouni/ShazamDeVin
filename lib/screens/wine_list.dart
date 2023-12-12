@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'package:shazam_vin/models/wine_details.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shazam_vin/models/GlobalData.dart';
 
 class WineListPage extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _WineListPageState extends State<WineListPage> {
   // Fonction pour effectuer une requête HTTP et récupérer la liste triée de vins
   Future<void> fetchWines({String? sortField, bool sortOrderDesc = false, String? searchTerm}) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.27:8080/wine/loads?sortField=$sortField&sortOrder=${sortOrderDesc ? 'desc' : 'asc'}&searchTerm=$searchTerm'),
+      Uri.parse('${GlobalData.server}/wine/loads?sortField=$sortField&sortOrder=${sortOrderDesc ? 'desc' : 'asc'}&searchTerm=$searchTerm'),
     );
 
     if (response.statusCode == 200) {

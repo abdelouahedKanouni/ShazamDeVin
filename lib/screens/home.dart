@@ -7,7 +7,7 @@ import 'package:shazam_vin/screens/wine_details.dart';
 import 'session_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shazam_vin/screens/wine_list.dart';
-
+import 'package:shazam_vin/models/GlobalData.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
       ////////////////////////////////////////////////
       if (result != null) {
         final response = await http.post(
-          Uri.parse('http://192.168.1.27:8080/verifyWine'),
+          Uri.parse('${GlobalData.server}/verifyWine'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'barcode': result.rawContent}),
         );
@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
     // Envoyer une requête POST à l'API pour supprimer la session
     final response = await http.post(
-      Uri.parse('http://192.168.1.27:8080/logout'),
+      Uri.parse('${GlobalData.server}/auth/logout'),
       headers: {'Content-Type': 'application/json'},
     );
     // Nettoyer la session localement

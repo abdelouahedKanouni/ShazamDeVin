@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'session_utils.dart';
+import 'package:shazam_vin/models/GlobalData.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.1.27:8080/auth/login"),
+          Uri.parse("${GlobalData.server}/auth/login"),
           headers: <String, String>{
             'Content-Type': 'application/json;charSet=UTF-8'
           },

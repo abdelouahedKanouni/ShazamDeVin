@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shazam_vin/models/wine_details.dart';
 import 'package:http/http.dart' as http;
+import 'package:shazam_vin/models/GlobalData.dart';
 
 class WineDetailsPage extends StatefulWidget {
   final String barcode;
@@ -126,7 +127,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   Future<void> _loadWineDetails() async {
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.27:8080/wine/loadDetails'),
+        Uri.parse('${GlobalData.server}/wine/loadDetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'barcode': widget.barcode}),
       );
@@ -185,7 +186,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       BuildContext currentContext = context;
 
       var response = await http.post(
-        Uri.parse('http://192.168.1.27:8080/wine/saveDetails'),
+        Uri.parse('${GlobalData.server}/wine/saveDetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(wineDetails.toMap()),
       );

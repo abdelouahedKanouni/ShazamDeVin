@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shazam_vin/models/GlobalData.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.1.27:8080/auth/signup"),
+          Uri.parse("${GlobalData.server}/auth/signup"),
           headers: <String, String>{
             'Content-Type': 'application/json;charSet=UTF-8',
           },
