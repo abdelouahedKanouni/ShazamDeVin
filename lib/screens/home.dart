@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => _showWineList(),
+                onPressed: () => _showWineList(context),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.transparent,
                   onPrimary: Colors.white,
@@ -78,32 +78,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showAlert(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Résultat du scan'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _scanBarcode(BuildContext context) async {
     try {
-      //////// Récupérer la session de l'utilisateur////
-      final userSession= await getSession();
-      print('session: $userSession');
-      ////////////////////////////////////////////////
       var result = await BarcodeScanner.scan();
       if (result != null) {
         final response = await http.post(
@@ -113,25 +89,41 @@ class HomeScreen extends StatelessWidget {
         );
         final message = json.decode(response.body)['message'] as String;
 
-        if (message.startsWith('Code-barres')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WineDetailsPage(barcode: result.rawContent),
-            ),
-          );
-        } else {
-          _showAlert(context, message);
-        }
+        Fluttertoast.showToast(
+          msg: 'Affichage du vin n°${result.rawContent}',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 18.0,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WineDetailsPage(barcode: result.rawContent),
+          ),
+        );
       }
     } catch (e) {
-      _showAlert(context, 'Erreur de scan : $e');
+      Fluttertoast.showToast(
+        msg: 'Erreur de scan : $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18.0,
+      );
     }
   }
 
 
-  void _showWineList() {
-    // Afficher Liste Vins
+  void _showWineList(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => WineListPage()),
+    );
   }
 
   void _logout(BuildContext context) async {
