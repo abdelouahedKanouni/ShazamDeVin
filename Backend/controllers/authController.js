@@ -11,6 +11,10 @@ exports.login = async (req, res) => {
       const passwordMatch = await bcrypt.compare(req.body.password, user.password);
 
       if (passwordMatch) {
+        req.session.user = user;
+        req.session.save();
+        console.log(req.session);
+        console.log(req.session.id);
         res.json(user);
       } else {
         res.status(402).json({ message: 'Les informations de connexion sont incorrectes' });

@@ -46,11 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 18.0,
           );
           // Enregistrer la session
+          GlobalData.updateCookie(response);
           final Map<String, dynamic> userData = {
             'userId': jsonDecode(response.body)['_id'],
             'isAdmin': jsonDecode(response.body)['is_admin'],
           };
-          await saveSession(userData['userId'], userData['isAdmin']);
+          await saveSession(userData['userId'], response.headers['set-cookie'] ?? '', userData['isAdmin']);
 
           Navigator.pushNamed(context, '/home');
         }else if (response.statusCode == 401) {
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: _isLoading
                         ? CircularProgressIndicator()
-                        : Text(
+                        : const Text(
                       'Se connecter',
                       style: TextStyle(
                         color: Colors.white,
@@ -192,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Naviguer vers la page d'inscription
                       Navigator.pushNamed(context, '/signup');
                     },
-                    child: Text(
+                    child: const Text(
                       'S\'inscrire',
                       style: TextStyle(
                         color: Colors.white,

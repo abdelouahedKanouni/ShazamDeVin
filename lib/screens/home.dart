@@ -82,19 +82,38 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> _scanBarcode(BuildContext context) async {
     try {
+      final String? sessionCookie = await getSessionCookie();
+
       var result = await BarcodeScanner.scan();
-      //////// Récupérer la session de l'utilisateur////
-      final userSession= await getSession();
-      print('session: $userSession');
-      ////////////////////////////////////////////////
-      if (result != null) {
+
+      if (result.rawContent != '') {
         final response = await http.post(
-          Uri.parse('${GlobalData.server}/verifyWine'),
-          headers: {'Content-Type': 'application/json'},
+          Uri.parse('${GlobalData.server}/wine/verify'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': sessionCookie ?? '',
+          },
           body: jsonEncode({'barcode': result.rawContent}),
         );
         final message = json.decode(response.body)['message'] as String;
 
+        final session = await getSession();
+        bool isAdmin = false;
+        if (session != null) {
+          isAdmin = session['isAdmin'];
+        }
+        if (response.statusCode == 404 && !isAdmin){
+          Fluttertoast.showToast(
+            msg: 'Erreur le code barre n\'est pas reconnu',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 18.0,
+          );
+          return;
+        }
         Fluttertoast.showToast(
           msg: 'Affichage du vin n°${result.rawContent}',
           toastLength: Toast.LENGTH_SHORT,

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shazam_vin/models/wine_details.dart';
 import 'package:http/http.dart' as http;
 import 'package:shazam_vin/models/GlobalData.dart';
+import 'package:shazam_vin/screens/session_utils.dart';
 
 class WineDetailsPage extends StatefulWidget {
   final String barcode;
@@ -22,6 +23,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   final TextEditingController cepageController = TextEditingController();
   final TextEditingController chateauController = TextEditingController();
   final TextEditingController prixController = TextEditingController();
+  bool isAdmin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   labelText: 'Nom du Vin',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
+                enabled: isAdmin,
               ),
               // Champ de description avec plusieurs lignes
               Container(
@@ -69,6 +72,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   ),
                   minLines: 2,
                   maxLines: null,
+                  enabled: isAdmin,
                 ),
               ),
               TextField(
@@ -78,6 +82,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   labelText: 'Embouteillage',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
+                enabled: isAdmin,
               ),
               TextField(
                 controller: cepageController,
@@ -86,6 +91,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   labelText: 'Cepage',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
+                enabled: isAdmin,
               ),
               TextField(
                 controller: chateauController,
@@ -94,6 +100,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   labelText: 'Chateau',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
+                enabled: isAdmin,
               ),
               TextField(
                 controller: prixController,
@@ -103,14 +110,74 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   labelText: 'Prix (€)',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
+                enabled: isAdmin,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  _saveWineDetails(context);
-                },
-                child: const Text('Enregistrer'),
-              ),
+              if (isAdmin) ... [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.transparent,
+                        onPrimary: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      child: const Text('Annuler'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _saveWineDetails(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                      child: const Text('Enregistrer'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _deleteWine();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  child: const Text('Supprimer'),
+                ),
+              ] else ... [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  child: const Text('Retour'),
+                ),
+              ],
             ],
           ),
         ),
@@ -121,7 +188,17 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   @override
   void initState() {
     super.initState();
+    _checkAdminStatus();
     _loadWineDetails();
+  }
+
+  Future<void> _checkAdminStatus() async {
+    final session = await getSession();
+    if (session != null) {
+      setState(() {
+        isAdmin = session['isAdmin'] ?? false;
+      });
+    }
   }
 
   Future<void> _loadWineDetails() async {
@@ -201,5 +278,25 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     _showAlert(context, 'Erreur : $e', false);
     }
   }
+
+  Future<void> _deleteWine() async {
+    try {
+      var response = await http.post(
+        Uri.parse('${GlobalData.server}/wine/delete'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'barcode': widget.barcode}),
+      );
+
+      if (response.statusCode == 200) {
+        _showAlert(context, 'Vin supprimé avec succès', true);
+        Navigator.pop(context);
+      } else {
+        _showAlert(context, 'Erreur lors de la suppression du vin', false);
+      }
+    } catch (e) {
+      _showAlert(context, 'Erreur : $e', false);
+    }
+  }
+
 
 }

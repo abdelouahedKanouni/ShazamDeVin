@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:shazam_vin/screens/session_utils.dart';
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'package:shazam_vin/models/wine_details.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,8 +27,15 @@ class _WineListPageState extends State<WineListPage> {
 
   // Fonction pour effectuer une requête HTTP et récupérer la liste triée de vins
   Future<void> fetchWines() async {
+
+    final String? sessionCookie = await getSessionCookie();
+
+
     final response = await http.get(
       Uri.parse('${GlobalData.server}/wine/loads?sortField=$sortField&sortOrder=${sortOrderDesc ? 'desc' : 'asc'}&searchTerm=$searchTerm'),
+      headers: {
+        'Cookie': sessionCookie ?? '',
+      },
     );
 
     if (response.statusCode == 200) {
@@ -141,9 +149,32 @@ class _WineListPageState extends State<WineListPage> {
                         side: const BorderSide(color: Colors.black),
                       ),
                       child: ListTile(
-                        title: Text(wine.nom ?? 'Inconnu'),
-                        subtitle: Text('Prix: ${wine.prix}'),
-                        onTap: () async {
+                        // Moving the price to the top left corner with a badge effect
+                        leading: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.blue, // Adjust the color as needed
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Text(
+                            '${wine.prix} €',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        title: Text(wine.nom ?? ''), // Displaying the cepage
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(wine.chateau ?? ''), // Displaying the chateau
+                            Text(wine.cepage ?? ''), // Second subtitle
+                          ],
+                        ),                        onTap: () async {
                           // Navigate to the wine details page when the wine is clicked
                           await Navigator.push(
                             context,
@@ -155,7 +186,7 @@ class _WineListPageState extends State<WineListPage> {
                         },
                       ),
                     );
-                  },
+                    },
                 ),
               ),
             ),
