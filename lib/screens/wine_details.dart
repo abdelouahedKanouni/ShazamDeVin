@@ -205,7 +205,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/loadDetails'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode({'barcode': widget.barcode}),
       );
 
@@ -223,7 +226,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           prixController.text = wineData['prix']?.toString() ?? '';
         });
       } else {
-        _showAlert(context,'Erreur lors du chargement des détails du vin: ${response.body}', false);
+        _showAlert(context,'Erreur lors du chargement des détails du vin', false);
       }
     } catch (e) {
       _showAlert(context,'Erreur lors du chargement des détails du vin: $e', false);
@@ -264,7 +267,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
 
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/saveDetails'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode(wineDetails.toMap()),
       );
 
@@ -283,7 +289,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/delete'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode({'barcode': widget.barcode}),
       );
 
