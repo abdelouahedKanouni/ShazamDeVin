@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(session({
-  secret: 'votre-secret-key',
+  secret: crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Durée de vie d'une journée en millisecondes

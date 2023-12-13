@@ -43,11 +43,11 @@ exports.logout = (req, res) => {
     res.status(200).json({ message: 'Logged out' });
 }
 
-app.get('/logout', (req, res) => {
+exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error('Erreur lors de la déconnexion :', err);
       res.status(500).send('Erreur lors de la déconnexion');
     }
   });
-});
+};
