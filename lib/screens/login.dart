@@ -122,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
-                      // Ajoutez le style pour le texte saisi
                       hintStyle: TextStyle(color: Colors.white),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -131,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     validator: (value) {
                       if (value?.isEmpty ?? true) {
                         return 'Veuillez entrer votre identifiant';
@@ -139,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: passwordController,
                     decoration: const InputDecoration(
@@ -179,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     child: _isLoading
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : const Text(
                       'Se connecter',
                       style: TextStyle(

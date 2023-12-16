@@ -16,13 +16,9 @@ dependencies:
   barcode_scan2: ^4.0.0
   http: ^1.1.0
   shared_preferences: ^2.0.8
-  google_fonts: ^6.1.0
+  google_fonts: ^4.0.5
   material_design_icons_flutter: 7.0.7296
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  flutter_rating_bar: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -40,4 +36,3 @@ flutter:
   assets:
     - assets/images/Vin.jpg
     - assets/images/Vigne.jpg
-uses-material-design: true

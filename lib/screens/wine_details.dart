@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shazam_vin/models/wine_details.dart';
 import 'package:http/http.dart' as http;
+import 'package:shazam_vin/models/wine_details.dart';
+import 'package:shazam_vin/models/Commentaire.dart';
 import 'package:shazam_vin/models/GlobalData.dart';
 import 'package:shazam_vin/screens/session_utils.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class WineDetailsPage extends StatefulWidget {
   final String barcode;
@@ -24,6 +27,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   final TextEditingController chateauController = TextEditingController();
   final TextEditingController prixController = TextEditingController();
   bool isAdmin = false;
+  String idUser = '';
+  double initialRating = 0.0;
+  double currentRating = 0.0;
+  List<Commentaire> commentaires = [];
 
   @override
   Widget build(BuildContext context) {
@@ -53,69 +60,84 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               TextField(
                 controller: nomController,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nom du Vin',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
                 enabled: isAdmin,
               ),
-              // Champ de description avec plusieurs lignes
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextField(
-                  controller: descriptifController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Descriptif',
-                    labelStyle: TextStyle(color: Colors.white),
-                    alignLabelWithHint: true,
-                  ),
-                  minLines: 2,
-                  maxLines: null,
-                  enabled: isAdmin,
+              const SizedBox(height: 8.0),
+              TextField(
+                controller: descriptifController,
+                style:  TextStyle(color: Colors.white),
+                decoration:  InputDecoration(
+                  labelText: 'Descriptif',
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
+                enabled: isAdmin,
               ),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: embouteillageController,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   labelText: 'Embouteillage',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
                 enabled: isAdmin,
               ),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: cepageController,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Cepage',
-                  labelStyle: TextStyle(color: Colors.white),
+                decoration:  InputDecoration(
+                  labelText: 'Cépage',
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
                 enabled: isAdmin,
               ),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: chateauController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Chateau',
-                  labelStyle: TextStyle(color: Colors.white),
+                style:  TextStyle(color: Colors.white),
+                decoration:  InputDecoration(
+                  labelText: 'Château',
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
                 enabled: isAdmin,
               ),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: prixController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Prix (€)',
-                  labelStyle: TextStyle(color: Colors.white),
+                decoration:  InputDecoration(
+                  labelText: 'Prix €',
+                  labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
+                  contentPadding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 8.0),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.45),
                 ),
                 enabled: isAdmin,
               ),
               const SizedBox(height: 20),
               if (isAdmin) ... [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -148,36 +170,51 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _deleteWine();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
-                    onPrimary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  child: const Text('Supprimer'),
-                ),
-              ] else ... [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.black),
-                    ),
-                  ),
-                  child: const Text('Retour'),
-                ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _deleteWine();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                          onPrimary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                        child: const Text('Supprimer'),
+                      ),
+                    ] else ... [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        child: const Text('Retour'),
+                      ),
               ],
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () {
+                  _showComments();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: Colors.black),
+                  ),
+                ),
+                child: const Text('Commentaires'),
+              ),
             ],
           ),
         ),
@@ -191,6 +228,288 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     _checkAdminStatus();
     _loadWineDetails();
   }
+
+  void _showComments() {
+    // Créer une liste pour stocker les sections de chaque utilisateur
+    List<Widget> userSections = [];
+
+    for (var commentaire in commentaires) {
+      Widget userSection = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            title: FutureBuilder(
+              future: _getUserIdentifiant(commentaire.createdBy),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Text(
+                    'Utilisateur: ${snapshot.data}',
+                    style: TextStyle(color: Colors.white),
+                  );
+                } else {
+                  return Text(
+                    'Chargement...',
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
+              },
+            ),
+
+          ),
+          ListTile(
+            title: Text(
+              '${commentaire.commentaire}',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              '${commentaire.note}',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          if (isAdmin) ... [
+            ElevatedButton(
+              onPressed: () {
+                _deleteComment(commentaire.commentId);
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                onPrimary: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.white),
+                ),
+              ),
+              child: Text('Supprimer'),
+
+            ),
+          ],
+          Divider(color: Colors.white),
+        ],
+      );
+
+      userSections.add(userSection);
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(16.0),
+          backgroundColor: Colors.black.withOpacity(0.45),
+          children: [
+            if (commentaires.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Aucun commentaire disponible',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: userSections, // Afficher les sections des utilisateurs
+              ),
+            ElevatedButton(
+              onPressed: () {
+                _addComment();
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side: BorderSide(color: Colors.black),
+                ),
+                fixedSize: Size(10.0, 30.0),
+              ),
+              child: const Text('Ajouter un commentaire', style: TextStyle(fontSize: 12.0)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Fermer',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                  fontFamily: 'Pacifico',
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> _getUserIdentifiant(String userId) async {
+    try {
+      var response = await http.post(
+        Uri.parse('${GlobalData.server}/wine/getIdentifiant'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'userId': userId}),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body)['identifiant'];
+      } else {
+        return 'Utilisateur inconnu';
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération de l\'identifiant de l\'utilisateur : $e');
+      return 'Erreur';
+    }
+  }
+
+  void _addComment() {
+    TextEditingController commentController = TextEditingController();
+    double newRating = 0.0;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(5.0),
+          backgroundColor: Colors.black.withOpacity(0.8),
+          content: Column(
+            children: [
+              TextField(
+                controller: commentController,
+                style: const TextStyle(color: Colors.white),
+                decoration:  InputDecoration(
+                  labelText: 'Commentaire',
+                  labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.2),
+                ),
+                minLines: 2,
+                maxLines: 3,
+              ),
+              const SizedBox(height: 15.0),
+              Row(
+                children: [
+                  const Text('Note :', style: TextStyle(color: Colors.white)),
+                  const SizedBox(width: 10.0),
+                  RatingBar.builder(
+                    initialRating: newRating,
+                    minRating: 0,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemSize: 30.0,
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      newRating = rating;
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Annuler',
+                style: TextStyle(fontSize: 18.0, color: Colors.white, fontFamily: 'Pacifico'),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _saveComment(commentController.text, newRating);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white,
+                onPrimary: Colors.black,
+              ),
+              child: const Text(
+                'Ajouter',
+                style: TextStyle(fontSize: 18.0, color: Colors.black, fontFamily: 'Pacifico'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _saveComment(String commentaire, double note) async {
+    final userSession = await getSession();
+    if (userSession != null) {
+      setState(() {
+        idUser = userSession['userId'] ?? '';
+      });
+    }
+
+    try {
+      var response = await http.post(
+        Uri.parse('${GlobalData.server}/wine/addComment'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'wineId': widget.barcode,
+          'commentaire': commentaire,
+          'note': note,
+          'createdBy': idUser,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: 'Commentaire ajouté avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 18.0,
+        );
+        _loadWineDetails();
+      }
+    } catch (e) {
+      print('Erreur lors de l\'ajout du commentaire : $e');
+    }
+  }
+
+  Future<void> _deleteComment(String commentId) async {
+    try {
+      var response = await http.post(
+        Uri.parse('${GlobalData.server}/wine/deleteComment'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'wineId': widget.barcode,
+          'commentId': commentId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: 'Commentaire supprimé avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 18.0,
+        );
+        _loadWineDetails();
+      }
+    } catch (e) {
+      print('Erreur lors de la suppression du commentaire : $e');
+    }
+  }
+
+
 
   Future<void> _checkAdminStatus() async {
     final session = await getSession();
@@ -210,10 +529,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 404) {
-        // Convertir la réponse JSON en Map
         Map<String, dynamic> wineData = json.decode(response.body);
-
-        // Remplir les champs avec les données existantes
         setState(() {
           nomController.text = wineData['nom'] ?? '';
           descriptifController.text = wineData['descriptif'] ?? '';
@@ -221,27 +537,19 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           cepageController.text = wineData['cepage'] ?? '';
           chateauController.text = wineData['chateau'] ?? '';
           prixController.text = wineData['prix']?.toString() ?? '';
+          commentaires = (wineData['commentaires'] != null && wineData['commentaires'] is List)
+              ? (wineData['commentaires'] as List).map((c) => Commentaire.fromJson(c)).toList()
+              : [];
         });
       } else {
-        _showAlert(context,'Erreur lors du chargement des détails du vin: ${response.body}', false);
+        _showAlert(context, 'Erreur lors du chargement des détails du vin: ${response.body}', false);
       }
     } catch (e) {
-      _showAlert(context,'Erreur lors du chargement des détails du vin: $e', false);
+      _showAlert(context, 'Erreur lors du chargement des détails du vin: $e', false);
     }
   }
 
-  void _showAlert(BuildContext context, String message, bool success) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 2),
-        backgroundColor: success ? Colors.blue : Colors.red,
-      ),
-    );
-  }
-
   Future<void> _saveWineDetails(BuildContext context) async {
-
     try {
       String nom = nomController.text;
       String descriptif = descriptifController.text;
@@ -273,10 +581,19 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       } else {
         _showAlert(currentContext, 'Erreur lors de l\'enregistrement des détails du vin', false);
       }
-      Navigator.pop(context);
     } catch (e) {
     _showAlert(context, 'Erreur : $e', false);
     }
+  }
+
+  void _showAlert(BuildContext context, String message, bool success) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+        backgroundColor: success ? Colors.blue : Colors.red,
+      ),
+    );
   }
 
   Future<void> _deleteWine() async {
@@ -297,6 +614,4 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       _showAlert(context, 'Erreur : $e', false);
     }
   }
-
-
 }

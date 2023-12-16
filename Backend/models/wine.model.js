@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const commentaireSchema = new Schema({
+  createdBy: {
+      type: String,
+      ref: 'User',
+      required: true,
+  },
+  commentaire: String,
+  note: Number,
+});
+
 const wineSchema = new Schema({
   _id: {
     type: String,
@@ -13,6 +23,7 @@ const wineSchema = new Schema({
   cepage: String,
   chateau: String,
   prix: Number,
+  commentaires: [commentaireSchema],
 },
 { versionKey: false });
 
