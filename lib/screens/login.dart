@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final response = await http.post(
           Uri.parse("${GlobalData.server}/auth/login"),
           headers: <String, String>{
-            'Content-Type': 'application/json;charSet=UTF-8'
+            'Content-Type': 'application/json;charSet=UTF-8',
           },
           body: jsonEncode(<String, String>{
             'identifiant': identifiantController.text,
@@ -46,12 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 18.0,
           );
           // Enregistrer la session
-          GlobalData.updateCookie(response);
+          GlobalData.updateCookieSession(response);
           final Map<String, dynamic> userData = {
             'userId': jsonDecode(response.body)['_id'],
             'isAdmin': jsonDecode(response.body)['is_admin'],
           };
-          await saveSession(userData['userId'], response.headers['set-cookie'] ?? '', userData['isAdmin']);
+          await saveSession(userData['userId'], userData['isAdmin']);
 
           Navigator.pushNamed(context, '/home');
         }else if (response.statusCode == 401) {

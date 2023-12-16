@@ -82,7 +82,6 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> _scanBarcode(BuildContext context) async {
     try {
-      final String? sessionCookie = await getSessionCookie();
 
       var result = await BarcodeScanner.scan();
 
@@ -91,7 +90,7 @@ class HomeScreen extends StatelessWidget {
           Uri.parse('${GlobalData.server}/wine/verify'),
           headers: {
             'Content-Type': 'application/json',
-            'Cookie': sessionCookie ?? '',
+            'Cookie': GlobalData.cookie ?? '',
           },
           body: jsonEncode({'barcode': result.rawContent}),
         );

@@ -19,9 +19,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(session({
-  secret: 'salut',
+  secret: crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: true,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Durée de vie d'une journée en millisecondes
 }));
 
 const authRoutes = require('./routes/authRoutes');
@@ -29,15 +30,9 @@ const wineRoutes = require('./routes/wineRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/wine', (req, res, next) => {
-  /* console.log(req.session);
-  const cookieSession = req.cookies;
-
-// Faites ce que vous voulez avec le cookie, par exemple, l'afficher en log
-  console.log('Cookie de session reçu:', cookieSession);
-  console.log('Headers de la requête:', req.headers);
     if (!req.session.user) {
         return res.status(401).json({ message: 'Erreur, vous devez être authentifié pour accéder à ces ressources' });
-    } */
+    }
     next();
 }, wineRoutes);
 

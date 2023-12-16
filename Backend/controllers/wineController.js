@@ -20,9 +20,9 @@ exports.verifyWine = async (req, res) => {
 // Controller function for saving/updating wine details
 exports.saveWineDetails = async (req, res) => {
   try {
-    /* if (!req.session.user.is_admin) {
+    if (!req.session.user.is_admin) {
       res.status(401).json({ message: 'Erreur, vous devez être authentifiez et administrateur pour cette action' });
-    } */
+    }
     const existingWine = await Wine.findOne({ _id: req.body.id });
     if (existingWine) {
       await Wine.updateOne({ _id: req.body.id }, req.body);
@@ -154,9 +154,9 @@ exports.deleteWine = async (req, res) => {
   const { barcode } = req.body.barcode;
 
   try {
-    /* if (!req.session.user.is_admin) {
+    if (!req.session.user.is_admin) {
       res.status(401).json({ message: 'Erreur, vous devez être authentifiez et administrateur pour cette action' });
-    } */
+    }
     const deletedWine = await Wine.findOneAndDelete({ id: barcode });
 
     if (deletedWine) {

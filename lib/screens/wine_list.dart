@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:shazam_vin/screens/session_utils.dart';
 import 'package:shazam_vin/screens/wine_details.dart';
 import 'package:shazam_vin/models/wine_details.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,13 +27,10 @@ class _WineListPageState extends State<WineListPage> {
   // Fonction pour effectuer une requête HTTP et récupérer la liste triée de vins
   Future<void> fetchWines() async {
 
-    final String? sessionCookie = await getSessionCookie();
-
-
     final response = await http.get(
       Uri.parse('${GlobalData.server}/wine/loads?sortField=$sortField&sortOrder=${sortOrderDesc ? 'desc' : 'asc'}&searchTerm=$searchTerm'),
       headers: {
-        'Cookie': sessionCookie ?? '',
+        'Cookie': GlobalData.cookie ?? '',
       },
     );
 

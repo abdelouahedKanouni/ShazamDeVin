@@ -13,8 +13,6 @@ exports.login = async (req, res) => {
       if (passwordMatch) {
         req.session.user = user;
         req.session.save();
-        console.log(req.session);
-        console.log(req.session.id);
         res.json(user);
       } else {
         res.status(402).json({ message: 'Les informations de connexion sont incorrectes' });
@@ -41,5 +39,15 @@ exports.signup = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
+    req.session.destroy;
     res.status(200).json({ message: 'Logged out' });
 }
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Erreur lors de la déconnexion :', err);
+      res.status(500).send('Erreur lors de la déconnexion');
+    }
+  });
+};

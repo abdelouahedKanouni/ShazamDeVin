@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:shazam_vin/models/wine_details.dart';
+import 'package:http/http.dart' as http;
 import 'package:shazam_vin/models/Commentaire.dart';
 import 'package:shazam_vin/models/GlobalData.dart';
 import 'package:shazam_vin/screens/session_utils.dart';
@@ -529,7 +529,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 404) {
+        // Convertir la réponse JSON en Map
         Map<String, dynamic> wineData = json.decode(response.body);
+
+        // Remplir les champs avec les données existantes
         setState(() {
           nomController.text = wineData['nom'] ?? '';
           descriptifController.text = wineData['descriptif'] ?? '';
@@ -542,14 +545,25 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               : [];
         });
       } else {
-        _showAlert(context, 'Erreur lors du chargement des détails du vin: ${response.body}', false);
+        _showAlert(context,'Erreur lors du chargement des détails du vin: ${response.body}', false);
       }
     } catch (e) {
       _showAlert(context, 'Erreur lors du chargement des détails du vin: $e', false);
     }
   }
 
+  void _showAlert(BuildContext context, String message, bool success) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+        backgroundColor: success ? Colors.blue : Colors.red,
+      ),
+    );
+  }
+
   Future<void> _saveWineDetails(BuildContext context) async {
+
     try {
       String nom = nomController.text;
       String descriptif = descriptifController.text;
@@ -572,7 +586,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
 
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/saveDetails'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode(wineDetails.toMap()),
       );
 
@@ -581,26 +598,20 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       } else {
         _showAlert(currentContext, 'Erreur lors de l\'enregistrement des détails du vin', false);
       }
+      Navigator.pop(context);
     } catch (e) {
     _showAlert(context, 'Erreur : $e', false);
     }
-  }
-
-  void _showAlert(BuildContext context, String message, bool success) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 5),
-        backgroundColor: success ? Colors.blue : Colors.red,
-      ),
-    );
   }
 
   Future<void> _deleteWine() async {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/delete'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode({'barcode': widget.barcode}),
       );
 
@@ -614,4 +625,6 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       _showAlert(context, 'Erreur : $e', false);
     }
   }
+
+
 }
