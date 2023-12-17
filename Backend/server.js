@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 
 const port = "8080";
 const db_connection = "mongodb://127.0.0.1:27017/shazamDeVinBdd";
-const ip_address = "0.0.0.0"; // Mettre l'adresse ip du pc sur lequel se situe le serveur
+const ip_address = "192.168.1.27"; // Mettre l'adresse ip du pc sur lequel se situe le serveur
 
 mongoose.connect(db_connection, {
 });
@@ -30,6 +30,7 @@ const wineRoutes = require('./routes/wineRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/wine', (req, res, next) => {
+console.log(req.session);
     if (!req.session.user) {
         return res.status(401).json({ message: 'Erreur, vous devez être authentifié pour accéder à ces ressources' });
     }

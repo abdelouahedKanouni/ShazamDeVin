@@ -56,16 +56,18 @@ exports.getIdentifiant = async (req, res) => {
 
 exports.addComment = async (req, res) => {
     try {
+    console.log(req.body);
         const existingWine = await Wine.findOne({ _id: req.body.wineId });
         commentaire = req.body.commentaire;
         createdBy = req.body.createdBy;
         note = req.body.note;
+        console.log(existingWine);
         if (existingWine) {
         existingWine.commentaires.push({ createdBy: createdBy, commentaire, note });
         await existingWine.save();
         res.status(200).json({ message: 'Commentaire ajouté avec succès' });
         } else {
-        res.status(404).json({ message: 'Aucun vin trouvé avec ce code-barres' });
+        res.status(404).json({ message: 'Erreur lors de l\'ajout du commentaire' });
         }
     } catch (err) {
         console.log(err);

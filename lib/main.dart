@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
-        fontFamily: 'MaterialIcons',
+        fontFamily: 'Roboto',
       ),
       home: LoginScreen(),
       routes: {

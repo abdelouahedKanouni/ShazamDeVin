@@ -36,3 +36,10 @@ flutter:
   assets:
     - assets/images/Vin.jpg
     - assets/images/Vigne.jpg
+
+  fonts:
+    - family: Roboto
+
+  uses-material-design: true
+
+

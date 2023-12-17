@@ -55,11 +55,17 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
             children: [
               Text(
                 'Code-barres: ${widget.barcode}',
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
               ),
               TextField(
                 controller: nomController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration: InputDecoration(
                   labelText: 'Nom du Vin',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -72,7 +78,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               const SizedBox(height: 8.0),
               TextField(
                 controller: descriptifController,
-                style:  TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration:  InputDecoration(
                   labelText: 'Descriptif',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -85,7 +94,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               const SizedBox(height: 8.0),
               TextField(
                 controller: embouteillageController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration:  InputDecoration(
                   labelText: 'Embouteillage',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -98,7 +110,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               const SizedBox(height: 8.0),
               TextField(
                 controller: cepageController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration:  InputDecoration(
                   labelText: 'Cépage',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -111,7 +126,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               const SizedBox(height: 8.0),
               TextField(
                 controller: chateauController,
-                style:  TextStyle(color: Colors.white),
+                style:  const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration:  InputDecoration(
                   labelText: 'Château',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -124,7 +142,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               const SizedBox(height: 8.0),
               TextField(
                 controller: prixController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
                 decoration:  InputDecoration(
                   labelText: 'Prix €',
                   labelStyle: GoogleFonts.pacifico(fontSize: 22.0, color: Colors.white),
@@ -151,7 +172,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                           side: BorderSide(color: Colors.white),
                         ),
                       ),
-                      child: const Text('Annuler'),
+                      child: const Text(
+                        'Annuler',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -165,7 +192,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                           side: BorderSide(color: Colors.black),
                         ),
                       ),
-                      child: const Text('Enregistrer'),
+                      child: const Text(
+                        'Enregistrer',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -182,7 +215,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                             side: BorderSide(color: Colors.white),
                           ),
                         ),
-                        child: const Text('Supprimer'),
+                        child: const Text(
+                          'Supprimer',
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 16.0,
+                          ),
+                        ),
                       ),
                     ] else ... [
                       ElevatedButton(
@@ -197,7 +236,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                             side: BorderSide(color: Colors.black),
                           ),
                         ),
-                        child: const Text('Retour'),
+                        child: const Text(
+                          'Retour',
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 16.0,
+                          ),
+                        ),
                       ),
               ],
               const SizedBox(height: 10.0),
@@ -213,7 +258,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                     side: BorderSide(color: Colors.black),
                   ),
                 ),
-                child: const Text('Commentaires'),
+                child: const Text(
+                  'Commentaires',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 16.0,
+                  ),
+                ),
               ),
             ],
           ),
@@ -226,11 +277,11 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
   void initState() {
     super.initState();
     _checkAdminStatus();
+    _getIdUser();
     _loadWineDetails();
   }
 
   void _showComments() {
-    // Créer une liste pour stocker les sections de chaque utilisateur
     List<Widget> userSections = [];
 
     for (var commentaire in commentaires) {
@@ -242,33 +293,50 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               future: _getUserIdentifiant(commentaire.createdBy),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return Text(
-                    'Utilisateur: ${snapshot.data}',
-                    style: TextStyle(color: Colors.white),
+                  return Row(
+                    children: [
+                      Text(
+                        '${snapshot.data} ',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      RatingBarIndicator(
+                        rating: commentaire.note.toDouble(),
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        itemCount: 5,
+                        itemSize: 20.0,
+                        direction: Axis.horizontal,
+                      ),
+                    ],
                   );
                 } else {
-                  return Text(
+                  return const Text(
                     'Chargement...',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Roboto',
+                      fontSize: 12.0,
+                    ),
                   );
                 }
               },
             ),
-
           ),
           ListTile(
             title: Text(
-              '${commentaire.commentaire}',
-              style: TextStyle(color: Colors.white),
+              commentaire.commentaire,
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: 'Roboto',
+                fontSize: 12.0,
+              ),
             ),
           ),
-          ListTile(
-            title: Text(
-              '${commentaire.note}',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          if (isAdmin) ... [
+          if (isAdmin || idUser == commentaire.createdBy ) ... [
             ElevatedButton(
               onPressed: () {
                 _deleteComment(commentaire.commentId);
@@ -281,11 +349,17 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   side: BorderSide(color: Colors.white),
                 ),
               ),
-              child: Text('Supprimer'),
+              child: const Text(
+                'Supprimer',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 12.0,
+                ),
+              ),
 
             ),
           ],
-          Divider(color: Colors.white),
+          const Divider(color: Colors.black),
         ],
       );
 
@@ -297,14 +371,17 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       builder: (BuildContext context) {
         return SimpleDialog(
           contentPadding: EdgeInsets.all(16.0),
-          backgroundColor: Colors.black.withOpacity(0.45),
+          backgroundColor: Colors.white,
           children: [
             if (commentaires.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Aucun commentaire disponible',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Roboto',
+                  ),
                 ),
               )
             else
@@ -325,7 +402,13 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 ),
                 fixedSize: Size(10.0, 30.0),
               ),
-              child: const Text('Ajouter un commentaire', style: TextStyle(fontSize: 12.0)),
+              child: const Text(
+                  'Ajouter un commentaire',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontFamily: 'Roboto',
+                  )
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -335,7 +418,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 'Fermer',
                 style: TextStyle(
                   fontSize: 18.0,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontFamily: 'Pacifico',
                 ),
               ),
@@ -350,7 +433,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/getIdentifiant'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode({'userId': userId}),
       );
 
@@ -374,26 +460,14 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.all(5.0),
-          backgroundColor: Colors.black.withOpacity(0.8),
+          backgroundColor: Colors.white,
           content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: commentController,
-                style: const TextStyle(color: Colors.white),
-                decoration:  InputDecoration(
-                  labelText: 'Commentaire',
-                  labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-                  border: const OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.2),
-                ),
-                minLines: 2,
-                maxLines: 3,
-              ),
               const SizedBox(height: 15.0),
               Row(
                 children: [
-                  const Text('Note :', style: TextStyle(color: Colors.white)),
+                  const Text('', style: TextStyle(color: Colors.white)),
                   const SizedBox(width: 10.0),
                   RatingBar.builder(
                     initialRating: newRating,
@@ -412,6 +486,20 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 15.0),
+              TextField(
+                controller: commentController,
+                style: const TextStyle(color: Colors.black),
+                decoration:  InputDecoration(
+                  labelText: 'Commentaire',
+                  labelStyle: const TextStyle(fontSize: 12.0, color: Colors.black),
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.2),
+                ),
+                minLines: 2,
+                maxLines: 3,
+              ),
             ],
           ),
           actions: [
@@ -421,7 +509,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
               },
               child: const Text(
                 'Annuler',
-                style: TextStyle(fontSize: 18.0, color: Colors.white, fontFamily: 'Pacifico'),
+                style: TextStyle(fontSize: 18.0, color: Colors.black, fontFamily: 'Pacifico'),
               ),
             ),
             ElevatedButton(
@@ -430,12 +518,12 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
+                primary: Colors.black,
+                onPrimary: Colors.white,
               ),
               child: const Text(
                 'Ajouter',
-                style: TextStyle(fontSize: 18.0, color: Colors.black, fontFamily: 'Pacifico'),
+                style: TextStyle(fontSize: 18.0, color: Colors.white, fontFamily: 'Pacifico'),
               ),
             ),
           ],
@@ -455,7 +543,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/addComment'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+        },
         body: jsonEncode({
           'wineId': widget.barcode,
           'commentaire': commentaire,
@@ -475,6 +566,8 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           fontSize: 18.0,
         );
         _loadWineDetails();
+        Navigator.of(context).pop();
+        _showComments();
       }
     } catch (e) {
       print('Erreur lors de l\'ajout du commentaire : $e');
@@ -485,7 +578,10 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/deleteComment'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+      },
         body: jsonEncode({
           'wineId': widget.barcode,
           'commentId': commentId,
@@ -503,6 +599,8 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           fontSize: 18.0,
         );
         _loadWineDetails();
+        Navigator.of(context).pop();
+        _showComments();
       }
     } catch (e) {
       print('Erreur lors de la suppression du commentaire : $e');
@@ -520,11 +618,23 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
     }
   }
 
+  Future<void> _getIdUser() async {
+    final session = await getSession();
+    if (session != null) {
+      setState(() {
+        idUser = session['userId'] ?? false;
+      });
+    }
+  }
+
   Future<void> _loadWineDetails() async {
     try {
       var response = await http.post(
         Uri.parse('${GlobalData.server}/wine/loadDetails'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': GlobalData.cookie ?? '',
+          },
         body: jsonEncode({'barcode': widget.barcode}),
       );
 
