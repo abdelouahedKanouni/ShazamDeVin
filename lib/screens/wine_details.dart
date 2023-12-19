@@ -246,23 +246,28 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                       ),
               ],
               const SizedBox(height: 10.0),
-              ElevatedButton(
+              TextButton.icon(
                 onPressed: () {
                   _showComments();
                 },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  onPrimary: Colors.black,
+                style: TextButton.styleFrom(
+                  primary: Colors.black,
+                  backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: BorderSide(color: Colors.black),
                   ),
                 ),
-                child: const Text(
+                icon: const Icon(
+                  Icons.comment,
+                  color: Colors.black,
+                ),
+                label: const Text(
                   'Commentaires',
                   style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 16.0,
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -389,27 +394,34 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: userSections, // Afficher les sections des utilisateurs
               ),
-            ElevatedButton(
+            TextButton.icon(
               onPressed: () {
                 _addComment();
               },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+                backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   side: BorderSide(color: Colors.black),
                 ),
                 fixedSize: Size(10.0, 30.0),
               ),
-              child: const Text(
-                  'Ajouter un commentaire',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontFamily: 'Roboto',
-                  )
+              icon: const Icon(
+                Icons.add,
+                color: Colors.black,
+                size: 20.0,
+              ),
+              label: const Text(
+                'Ajouter un commentaire',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontFamily: 'Roboto',
+                  color: Colors.black,
+                ),
               ),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
