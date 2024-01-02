@@ -212,7 +212,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                           onPrimary: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            side: BorderSide(color: Colors.white),
+                            side: const BorderSide(color: Colors.white),
                           ),
                         ),
                         child: const Text(
@@ -233,7 +233,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                           onPrimary: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            side: BorderSide(color: Colors.black),
+                            side: const BorderSide(color: Colors.black),
                           ),
                         ),
                         child: const Text(
@@ -577,7 +577,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           textColor: Colors.white,
           fontSize: 18.0,
         );
-        _loadWineDetails();
+        await _loadWineDetails();
         Navigator.of(context).pop();
         _showComments();
       }
@@ -610,7 +610,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
           textColor: Colors.white,
           fontSize: 18.0,
         );
-        _loadWineDetails();
+        await _loadWineDetails();
         Navigator.of(context).pop();
         _showComments();
       }
