@@ -398,9 +398,9 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
-                  side: BorderSide(color: Colors.black),
+                  side: const BorderSide(color: Colors.black),
                 ),
-                fixedSize: Size(10.0, 30.0),
+                fixedSize: const Size(10.0, 30.0),
               ),
               child: const Text(
                   'Ajouter un commentaire',
@@ -459,7 +459,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.all(5.0),
+          contentPadding: const EdgeInsets.all(5.0),
           backgroundColor: Colors.white,
           content: Column(
             mainAxisSize: MainAxisSize.min,
