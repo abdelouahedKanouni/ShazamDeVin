@@ -30,9 +30,8 @@ const wineRoutes = require('./routes/wineRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/wine', (req, res, next) => {
-console.log(req.session);
     if (!req.session.user) {
-        return res.status(401).json({ message: 'Erreur, vous devez être authentifié pour accéder à ces ressources' });
+        return res.status(401).json('Erreur, vous devez être authentifié pour accéder à ces ressources');
     }
     next();
 }, wineRoutes);

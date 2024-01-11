@@ -151,12 +151,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _logout(BuildContext context) async {
-    // Envoyer une requête POST à l'API pour supprimer la session
     final response = await http.post(
       Uri.parse('${GlobalData.server}/auth/logout'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Cookie': GlobalData.cookie ?? '',
+      },
     );
-    // Nettoyer la session localement
+
     await clearSession();
     if (response.statusCode==200) {
       Fluttertoast.showToast(

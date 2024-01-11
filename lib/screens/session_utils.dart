@@ -23,11 +23,6 @@ Future<Map<String, dynamic>?> getSession() async {
 Future<void> clearSession() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   GlobalData.cookie = "";
-  await http.get(
-    Uri.parse('${GlobalData.server}/auth/logout'),
-    headers: {
-      'Cookie': GlobalData.cookie ?? '',
-    },
-  );
   prefs.remove('userId');
+  prefs.remove('isAdmin');
 }

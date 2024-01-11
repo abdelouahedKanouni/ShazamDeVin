@@ -44,7 +44,7 @@ class _WineListPageState extends State<WineListPage> {
       });
     } else {
       Fluttertoast.showToast(
-        msg: 'Erreur de scan : ${response.body}',
+        msg: response.body,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.TOP,
         timeInSecForIosWeb: 3,
