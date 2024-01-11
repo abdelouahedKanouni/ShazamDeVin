@@ -384,7 +384,7 @@ class _WineDetailsPageState extends State<WineDetailsPage> {
                 child: Text(
                   'Aucun commentaire disponible',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontFamily: 'Roboto',
                   ),
                 ),
